@@ -1,35 +1,33 @@
 use self::ffi::*;
 use std::{io, mem, ptr, slice};
 use winapi::{
-    HRESULT,
-    IDXGIAdapter1,
-    IDXGIFactory1,
-    IDXGIOutput1,
-    S_OK,
-    UINT,
-    DXGI_OUTPUT_DESC,
-    LONG,
-    DXGI_MODE_ROTATION,
-    ID3D11Device,
-    ID3D11DeviceContext,
-    IDXGIOutputDuplication,
-    D3D11_SDK_VERSION,
-    D3D_DRIVER_TYPE_UNKNOWN,
-    D3D_FEATURE_LEVEL_9_1,
-    DXGI_ERROR_ACCESS_LOST,
-    DXGI_ERROR_WAIT_TIMEOUT,
-    DXGI_ERROR_INVALID_CALL,
-    E_ACCESSDENIED,
-    DXGI_ERROR_UNSUPPORTED,
-    ID3D11Texture2D,
-    DXGI_ERROR_NOT_CURRENTLY_AVAILABLE,
-    DXGI_ERROR_SESSION_DISCONNECTED,
-    TRUE,
-    IDXGISurface,
-    IDXGIResource,
-    DXGI_RESOURCE_PRIORITY_MAXIMUM,
-    D3D11_CPU_ACCESS_READ,
-    D3D11_USAGE_STAGING
+    shared::{
+        winerror::{
+            HRESULT, S_OK, DXGI_ERROR_ACCESS_LOST,
+            DXGI_ERROR_WAIT_TIMEOUT,
+            DXGI_ERROR_INVALID_CALL,
+            E_ACCESSDENIED,
+            DXGI_ERROR_UNSUPPORTED,
+            DXGI_ERROR_NOT_CURRENTLY_AVAILABLE,
+            DXGI_ERROR_SESSION_DISCONNECTED,
+        },
+        dxgi::{IDXGIAdapter1, IDXGIFactory1, IDXGISurface, IDXGIResource,
+            DXGI_OUTPUT_DESC,
+            DXGI_RESOURCE_PRIORITY_MAXIMUM,
+        },
+        dxgi1_2::{IDXGIOutput1, IDXGIOutputDuplication},
+        minwindef::UINT,
+        ntdef::{ LONG, TRUE,},
+        dxgitype::DXGI_MODE_ROTATION,
+    },
+    um::{
+        d3d11::{ ID3D11Device, ID3D11DeviceContext, ID3D11Texture2D,
+            D3D11_SDK_VERSION,
+            D3D11_CPU_ACCESS_READ,
+            D3D11_USAGE_STAGING,
+        },
+        d3dcommon::{D3D_DRIVER_TYPE_UNKNOWN, D3D_FEATURE_LEVEL_9_1},
+    },
 };
 
 mod ffi;
@@ -92,7 +90,7 @@ impl Capturer {
         Ok(unsafe {
             let mut capturer = Capturer {
                 device, context, duplication,
-                fastlane: desc.DesktopImageInSystemMemory == TRUE,
+                fastlane: desc.DesktopImageInSystemMemory == TRUE.into(),
                 surface: ptr::null_mut(),
                 height: display.height() as usize,
                 data: ptr::null_mut(),
@@ -160,7 +158,7 @@ impl Capturer {
 
         texture_desc.Usage = D3D11_USAGE_STAGING;
         texture_desc.BindFlags = 0;
-        texture_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ.0;
+        texture_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
         texture_desc.MiscFlags = 0;
 
         let mut readable = ptr::null_mut();
@@ -309,7 +307,7 @@ impl Displays {
 
         // We cast it up to the version needed for desktop duplication.
 
-        let mut inner = ptr::null_mut();
+        let mut inner: *mut IDXGIOutput1 = ptr::null_mut();
         unsafe {
             (*output).QueryInterface(
                 &IID_IDXGIOUTPUT1,

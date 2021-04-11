@@ -1,18 +1,17 @@
 [package]
-name = "scrap"
-description = "Screen capture made easy."
-version = "0.5.0"
-repository = "https://github.com/quadrupleslap/scrap"
-documentation = "https://docs.rs/scrap"
+name = "scrap-async"
+description = "Screen async capture made easy."
+version = "0.1.0"
+authors = ["chen <chanble_cn@163.com>"]
+edition = "2018"
 keywords = ["screen", "capture", "record"]
 license = "MIT"
-authors = ["Ram <quadrupleslap@gmail.com>"]
 
 [dependencies]
 block = "0.1"
-cfg-if = "0.1"
+cfg-if = "1.0"
 libc = "0.2"
-winapi = "0.2"
+winapi = { version = "0.3", features = ["winerror", "d3dcommon", "dxgi1_2", "d3d11"]}
 
 [dev-dependencies]
 repng = "0.2"

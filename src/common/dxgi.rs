@@ -1,4 +1,4 @@
-use dxgi;
+use crate::dxgi;
 use std::{io, ops};
 use std::io::ErrorKind::{WouldBlock, TimedOut, NotFound};
 

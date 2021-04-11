@@ -1,15 +1,14 @@
-use winapi::{
-    GUID,
-    HRESULT,
-    REFIID,
-    IDXGIFactory1,
-    IDXGIAdapter,
-    D3D_DRIVER_TYPE,
-    HMODULE,
-    UINT,
-    ID3D11Device,
-    D3D_FEATURE_LEVEL,
-    ID3D11DeviceContext
+use winapi::{self,
+    shared::{
+        guiddef::{GUID, REFIID},
+        minwindef::{HMODULE, UINT},
+        winerror::HRESULT,
+        dxgi::{IDXGIFactory1, IDXGIAdapter}
+    },
+    um::{
+        d3dcommon::{D3D_DRIVER_TYPE, D3D_FEATURE_LEVEL},
+        d3d11::{ID3D11Device, ID3D11DeviceContext}
+    },
 };
 
 pub const DXGI_MAP_READ: UINT = 1;
